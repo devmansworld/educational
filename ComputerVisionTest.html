@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Computer Vision / Emotion Recognition Project</title>
+<style>
+body { font-family:"Segoe UI",sans-serif; background:#f4f4f9; color:#222; line-height:1.6; margin:40px; }
+h1,h2,h3 { color:#ff6600; }
+code, pre { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+ul { margin-left:20px; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid orange; }
+</style>
+</head>
+<body>
+
+<h1>🧠 Emotion Recognition MVP Project (Keras + ONNX + Qt)</h1>
+<p>This page documents the <strong>practical structure</strong> and implementation used to teach applied computer vision concepts.  
+It does not include the certification test questions.</p>
+
+<hr>
+
+<h2>📁 Folder Structure</h2>
+<pre>
+EmotionApp/
+├── models/
+│   └── emotion_model.onnx
+└── src/
+    ├── main.cpp
+    ├── face_detector.hpp
+    └── emotion_classifier.hpp
+</pre>
+
+<hr>
+<h2>⚙️ Description</h2>
+<ul>
+<li><strong>Language:</strong> C++17</li>
+<li><strong>Frameworks:</strong> OpenCV, Qt, ONNX Runtime</li>
+<li><strong>Goal:</strong> Real-time emotion recognition from webcam using pretrained CNN</li>
+<li><strong>Platform:</strong> macOS, iOS (Qt cross-compile ready)</li>
+</ul>
+
+<hr>
+<h2>🚀 main.cpp (simplified view)</h2>
+<pre>
+#include &lt;opencv2/opencv.hpp&gt;
+#include "face_detector.hpp"
+#include "emotion_classifier.hpp"
+
+int main() {
+    cv::VideoCapture cap(0);
+    if (!cap.isOpened()) return -1;
+    FaceDetector detector;
+    EmotionClassifier classifier("../models/emotion_model.onnx");
+
+    while (true) {
+        cv::Mat frame;
+        cap >> frame;
+        auto faces = detector.detectFaces(frame);
+        for (auto &face : faces) {
+            auto emotion = classifier.predict(frame(face));
+            cv::rectangle(frame, face, cv::Scalar(0,255,0), 2);
+            cv::putText(frame, emotion, {face.x, face.y-10},
+                cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0,255,0), 2);
+        }
+        cv::imshow("Emotion Recognition", frame);
+        if (cv::waitKey(1)=='q') break;
+    }
+}
+</pre>
+
+<hr>
+<h2>🧩 face_detector.hpp</h2>
+<pre>
+#include &lt;opencv2/opencv.hpp&gt;
+class FaceDetector {
+    cv::CascadeClassifier faceCascade;
+public:
+    FaceDetector() { faceCascade.load("haarcascade_frontalface_default.xml"); }
+    std::vector&lt;cv::Rect&gt; detectFaces(const cv::Mat &gray) {
+        std::vector&lt;cv::Rect&gt; faces;
+        faceCascade.detectMultiScale(gray, faces, 1.1, 4);
+        return faces;
+    }
+};
+</pre>
+
+<hr>
+<h2>🧠 emotion_classifier.hpp</h2>
+<pre>
+#include &lt;onnxruntime_cxx_api.h&gt;
+#include &lt;opencv2/opencv.hpp&gt;
+class EmotionClassifier {
+    Ort::Env env;
+    Ort::Session session{nullptr};
+public:
+    EmotionClassifier(const std::string &path)
+        : env(ORT_LOGGING_LEVEL_WARNING, "emotion"),
+          session(env, path.c_str(), Ort::SessionOptions{nullptr}) {}
+    std::string predict(const cv::Mat &faceROI) {
+        // preprocessing + inference logic
+        return "neutral";
+    }
+};
+</pre>
+
+<hr>
+<h2>📚 Educational Focus</h2>
+<ul>
+<li>Transfer Learning applied with ONNX-converted Keras models</li>
+<li>Real-time inference loop using C++</li>
+<li>Qt-based GUI for interactive visualization (MVP4/5)</li>
+<li>Python test cases prepared to validate model outputs offline</li>
+</ul>
+
+<hr>
+<h2>🧪 Automated Tests (Python, for demonstration)</h2>
+<pre>
+# test_emotion_model.py
+import onnxruntime as ort
+import numpy as np
+
+def test_model_loads():
+    session = ort.InferenceSession("models/emotion_model.onnx")
+    assert session is not None
+
+def test_predict_shape():
+    session = ort.InferenceSession("models/emotion_model.onnx")
+    input_data = np.random.randn(1, 1, 48, 48).astype(np.float32)
+    output = session.run(None, {session.get_inputs()[0].name: input_data})
+    assert len(output[0][0]) == 7  # 7 emotions
+</pre>
+
+<hr>
+<h2>🔒 Security & Teaching Separation</h2>
+<div class="note">
+The certification questions and this project documentation are stored in separate files to ensure data integrity and exam confidentiality.  
+Only the teaching materials (code, structure, and tests) are to be shared publicly.
+</div>
+
+</body>
+</html>

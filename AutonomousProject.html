@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Autonomous Systems Practical Project / Teaching Copy</title>
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f4f9;
+  color: #222;
+  line-height: 1.6;
+  margin: 40px;
+}
+h1,h2,h3 {
+  color:#ff6600;
+}
+pre, code {
+  background:#222;
+  color:#eee;
+  padding:10px;
+  border-radius:6px;
+  display:block;
+  overflow:auto;
+}
+.note {
+  background:#fff3cd;
+  padding:10px;
+  border-left:4px solid orange;
+  margin-top:20px;
+}
+hr { margin:25px 0; }
+</style>
+</head>
+<body>
+<h1>🚗 Autonomous Systems Project (Kalman & Localization)</h1>
+<p>This page summarizes the <strong>practical implementation</strong> of localization, Kalman filters, and sensor fusion.  
+It’s designed for teaching and safe demonstration. Assessment questions are kept separate.</p>
+
+<hr>
+<h2>📁 Folder Structure</h2>
+<pre>
+autonomous-systems/
+│
+├── kalman/
+│   ├── kalman_filter.py
+│   └── tests/
+│       └── test_kalman.py
+│
+├── particle_filter/
+│   ├── particle_filter.py
+│   └── test_particle.py
+│
+├── trig_localization/
+│   └── localization_math.py
+│
+└── data/
+    └── landmarks.json
+</pre>
+
+<hr>
+<h2>🧩 kalman_filter.py</h2>
+<pre>
+# Simple 1D Kalman Filter Example
+import numpy as np
+
+class KalmanFilter:
+    def __init__(self, process_var, meas_var, estimate, error_est):
+        self.process_var = process_var
+        self.meas_var = meas_var
+        self.estimate = estimate
+        self.error_est = error_est
+
+    def update(self, measurement):
+        # Prediction
+        pred_est = self.estimate
+        pred_err = self.error_est + self.process_var
+
+        # Update
+        gain = pred_err / (pred_err + self.meas_var)
+        self.estimate = pred_est + gain * (measurement - pred_est)
+        self.error_est = (1 - gain) * pred_err
+        return self.estimate
+</pre>
+
+<hr>
+<h2>🧮 particle_filter.py</h2>
+<pre>
+import random, math
+
+class ParticleFilter:
+    def __init__(self, num_particles=50):
+        self.particles = [random.random() for _ in range(num_particles)]
+        self.weights = [1.0 / num_particles] * num_particles
+
+    def update_weights(self, measurement, sigma):
+        for i, particle in enumerate(self.particles):
+            prob = math.exp(-0.5 * ((measurement - particle) / sigma)**2)
+            self.weights[i] = prob
+        total = sum(self.weights)
+        self.weights = [w / total for w in self.weights]
+</pre>
+
+<hr>
+<h2>📐 localization_math.py</h2>
+<pre>
+import math
+
+def displacement_components(D, angle_deg):
+    angle_rad = math.radians(angle_deg)
+    return D * math.cos(angle_rad), D * math.sin(angle_rad)
+
+# Example usage
+if __name__ == "__main__":
+    x, y = displacement_components(1920, 30)
+    print(f"x = {x:.2f}, y = {y:.2f}")
+</pre>
+
+<hr>
+<h2>✅ Automated Test Example (pytest style)</h2>
+<pre>
+# test_kalman.py
+from kalman_filter import KalmanFilter
+
+def test_kalman_update():
+    kf = KalmanFilter(process_var=1, meas_var=2, estimate=10, error_est=2)
+    new_est = kf.update(12)
+    assert 10 &lt; new_est &lt; 12
+</pre>
+
+<hr>
+<h2>🏃 Running Locally</h2>
+<ul>
+<li>Install Python ≥3.9</li>
+<li>Install dependencies (if any): <code>pip install numpy pytest</code></li>
+<li>Run tests: <code>pytest -v</code></li>
+<li>Run examples: <code>python trig_localization/localization_math.py</code></li>
+</ul>
+
+<div class="note">
+💡 <strong>Security note:</strong> this teaching version does not include access to any real test questions or assessment keys.
+It focuses solely on code comprehension, mathematical reasoning, and secure software demonstration.
+</div>
+</body>
+</html>

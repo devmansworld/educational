@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kalman & Localization Test / Certification Copy</title>
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f9f9fb;
+  color: #222;
+  margin: 40px;
+  line-height: 1.6;
+}
+h1, h2 {
+  color: #ff6600;
+}
+hr { margin: 25px 0; }
+.question {
+  margin-bottom: 18px;
+}
+.question strong {
+  color: #ff6600;
+}
+</style>
+</head>
+<body>
+<h1>🔒 Kalman, Functional Safety & Localization Test</h1>
+<p>This document lists the assessment questions used for certification purposes.  
+Answers are not included for data integrity and test security.</p>
+
+<hr>
+<h2>📘 Section 1 — Kalman Filter</h2>
+<div class="question"><strong>1.</strong> Which of the following is true?<br>
+a. In prediction process, motion model distribution is added to previous position to get next position parameter.<br>
+b. Prediction process simply shifts mean value of position to new mean based on motion parameter.<br>
+c. Prediction process is based on mathematical estimation of next value of the parameter for previous sample.<br>
+d. All of the above.
+</div>
+<div class="question"><strong>2.</strong> Update Model is also known as:<br>
+a. Measurement model<br>b. Motion model<br>c. Estimation model<br>d. None of the above
+</div>
+<div class="question"><strong>3.</strong> In which of the following cases Kalman filter can be used?<br>
+a. When accurate measurement of parameter is not guaranteed<br>
+b. When error in measurement follows a Gaussian distribution<br>
+c. All of the above<br>d. None of the above
+</div>
+<div class="question"><strong>4.</strong> In negative feedback system, difference between estimated and measured parameter is:<br>
+a. Maximized<br>b. Minimized<br>c. Kept same
+</div>
+
+<hr>
+<h2>📘 Section 2 — Functional Safety & Trigonometry</h2>
+<div class="question"><strong>5.</strong> Functional safety document defines:<br>
+a. How to implement technology<br>
+b. How to avoid accidents<br>
+c. Rules and regulations for a particular geography which must be implemented for safety
+</div>
+<div class="question"><strong>6.</strong> If D is displacement magnitude at angle A from x-axis, displacement in y-direction is:<br>
+a. D tan A<br>b. D cos A<br>c. D sin A
+</div>
+<div class="question"><strong>7.</strong> Trigonometry is used in:<br>
+a. Sensor fusion<br>b. Computer vision<br>c. Localization and prediction
+</div>
+
+<hr>
+<h2>📘 Section 3 — Localization & Particle Filters</h2>
+<div class="question"><strong>8.</strong> Select statements that make odometry inefficient:<br>
+i. Wheel spin due to low traction<br>
+ii. Odometry requires GPS<br>
+iii. Vehicle skidding on braking<br>
+iv. Wheel speed sensors have low accuracy
+</div>
+<div class="question"><strong>9.</strong> In particle filters, the probability of a particle being resampled refers to:<br>
+a. Weight of a particle<br>b. Normalized weight of a particle<br>c. Entropy of a particle
+</div>
+<div class="question"><strong>10.</strong> The motion model of a Bayes’ filter comprises:<br>
+i. Transition model<br>ii. Belief over previous position<br>iii. Observation model
+</div>
+
+<hr>
+<h2>📘 Section 4 — Vehicle Dynamics & Markov Models</h2>
+<div class="question"><strong>11.</strong> Yaw rate can be defined as:<br>
+a. Rate of change of yaw<br>
+b. Rate of change of yaw (clockwise)<br>
+c. Rate of change of yaw (anti-clockwise)
+</div>
+<div class="question"><strong>12.</strong> The belief over current position comprises of:<br>
+a. x,y coordinates<br>b. Orientation<br>c. x,y + orientation<br>d. x,y, orientation + dynamics info
+</div>
+<div class="question"><strong>13.</strong> Markov assumption helps eliminate dependency over:<br>
+a. Current observation<br>b. History of data<br>c. Belief about posterior
+</div>
+
+<hr>
+<p><em>This transcript is provided for certification reference only.  
+Reproduction or modification is restricted under the secure assessment process.</em></p>
+</body>
+</html>

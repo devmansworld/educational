@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LLM Python Project & Secure Automation Reference</title>
+<style>
+  body { font-family: "Segoe UI", sans-serif; background: #f4f4f9; color:#222; margin:40px; }
+  h1, h2 { color:#ff6600; }
+  code, pre { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+  .note { background:#ffffcc; padding:10px; border-left:4px solid orange; }
+</style>
+</head>
+<body>
+<h1>🔒 Generative AI / LLMs – Python Automation Teaching Reference</h1>
+
+<p>This document summarizes the secure structure and logic of the practical project 
+used to demonstrate <strong>LLM-based automation and evaluation</strong>.  
+It includes folder organization, safe pseudocode, and a guide for reproducibility.</p>
+
+<hr>
+<h2>📁 Folder Structure</h2>
+<pre>
+llm_edu_project/
+│
+├── data/
+│   ├── prompts.json
+│   ├── results/
+│
+├── src/
+│   ├── __init__.py
+│   ├── llm_engine.py
+│   ├── evaluator.py
+│   └── tests/
+│       └── test_llm_responses.py
+│
+└── run.sh
+</pre>
+
+<hr>
+<h2>⚙️ Sample Python – llm_engine.py</h2>
+<pre>
+# llm_engine.py
+import openai
+import json
+
+def generate_completion(prompt: str, temperature=0.7, max_tokens=150):
+    """
+    Generates LLM completion based on user prompt.
+    Safe version without API keys stored in code.
+    """
+    # Instructors should inject credentials via environment variables
+    completion = {
+        "prompt": prompt,
+        "temperature": temperature,
+        "max_tokens": max_tokens
+    }
+    print("🧠 Simulating LLM output:", json.dumps(completion, indent=2))
+    return completion
+</pre>
+
+<hr>
+<h2>🧪 Automated Evaluation – evaluator.py</h2>
+<pre>
+# evaluator.py
+from src.llm_engine import generate_completion
+
+def evaluate_model(prompt_list):
+    results = []
+    for prompt in prompt_list:
+        result = generate_completion(prompt)
+        results.append(result)
+    return results
+</pre>
+
+<hr>
+<h2>🧠 Secure Test Example – test_llm_responses.py</h2>
+<pre>
+# test_llm_responses.py
+from src.evaluator import evaluate_model
+
+def test_responses_structure():
+    prompts = ["Translate 'bonjour' to English", "Summarize AI ethics"]
+    results = evaluate_model(prompts)
+    assert all("prompt" in r for r in results)
+    print("✅ Secure evaluation test passed.")
+</pre>
+
+<hr>
+<h2>🧰 Execution Guide</h2>
+<ul>
+  <li>Run tests safely in local environment (no external API keys).</li>
+  <li>Validate prompt-response logic and store logs under <code>data/results/</code>.</li>
+  <li>In a teaching setup: distribute only this HTML + safe scripts, keep credentials internal.</li>
+</ul>
+
+<div class="note">
+💡 Tip: For secure deployment in a classroom, keep the <code>llm_engine.py</code> mock-based.
+Real LLM calls can be enabled only by authorized instructors using environment-provided tokens.
+</div>
+
+<hr>
+<footer><em>Teaching Reference © 2025 — Generated for private academic use only.</em></footer>
+</body>
+</html>
