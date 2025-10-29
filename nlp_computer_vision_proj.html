@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCP ML Interactive Simulation - NLP & Vision</title>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+pre, code { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+details { margin-bottom:15px; }
+summary { cursor:pointer; font-weight:bold; }
+textarea, input[type="file"], button { padding:5px 10px; margin-bottom:10px; cursor:pointer; border-radius:4px; border:none; display:block; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<h1>🟢 GCP ML Interactive Simulation</h1>
+
+<details open>
+<summary>🔹 Part 1: NLP Simulation - Sentiment & Token Analysis</summary>
+
+<p>Analyze text comments for sentiment, nouns, and pronouns:</p>
+<textarea id="nlpComment" placeholder="Enter text for analysis..." rows="4" cols="50"></textarea>
+<button onclick="runNLP()">Analyze Text</button>
+
+<div class="output" id="nlpOutput">NLP analysis output will appear here...</div>
+
+<script>
+// NLP Simulation
+function runNLP() {
+    const comment = document.getElementById("nlpComment").value.toLowerCase();
+    let sentiment = "Neutral";
+
+    if(comment.includes("bad") || comment.includes("ugly") || comment.includes("terrible")) sentiment = "Negative";
+    else if(comment.includes("good") || comment.includes("great") || comment.includes("excellent")) sentiment = "Positive";
+
+    const tokens = comment.split(/\s+/);
+    const nouns = tokens.filter(t => ["student","product","movie","book","garden","pet"].includes(t));
+    const pronouns = tokens.filter(t => ["i","you","he","she","they"].includes(t));
+
+    const output = `
+Sentiment: ${sentiment}
+Tokens: ${tokens.join(", ")}
+Nouns: ${nouns.join(", ")}
+Pronouns: ${pronouns.join(", ")}
+`;
+    document.getElementById("nlpOutput").textContent = output;
+}
+</script>
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 2: Vision Simulation - Face, Landmark, OCR & Explicit Content</summary>
+
+<p>Upload an image to simulate Vision API analysis:</p>
+<input type="file" id="visionImage" accept="image/*">
+<button onclick="runVision()">Analyze Image</button>
+
+<div class="output" id="visionOutput">Vision analysis output will appear here...</div>
+
+<script>
+// Vision Simulation (demo only)
+function runVision() {
+    const fileInput = document.getElementById("visionImage");
+    if(!fileInput.files[0]) {
+        alert("Please upload an image first.");
+        return;
+    }
+
+    const fileName = fileInput.files[0].name.toLowerCase();
+    let output = `Analyzing image: ${fileName}\n\n`;
+
+    // Simulated detection results
+    if(fileName.includes("face")) output += "Face Detection: 2 faces detected ✅\n";
+    else output += "Face Detection: No faces detected ⚠️\n";
+
+    if(fileName.includes("landmark")) output += "Landmark Detection: Identified Eiffel Tower ✅\n";
+    else output += "Landmark Detection: No landmark detected ⚠️\n";
+
+    if(fileName.includes("text")) output += "OCR: Found text 'Hello World' ✅\n";
+    else output += "OCR: No text detected ⚠️\n";
+
+    if(fileName.includes("nsfw") || fileName.includes("explicit")) output += "Explicit Content Tag: YES ⚠️\n";
+    else output += "Explicit Content Tag: NO ✅\n";
+
+    document.getElementById("visionOutput").textContent = output;
+}
+</script>
+
+<div class="note">
+💡 Tip: Name your uploaded images using keywords like "face", "landmark", "text", "nsfw" to simulate detections. This demonstrates how Vision API features work in practice for ML education.
+</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 3: Summary of Concepts</summary>
+<ul>
+<li><b>NLP:</b> Sentiment analysis, syntax analysis, tokenization, entity recognition.</li>
+<li><b>Vision API:</b> Face detection, landmark detection, OCR, explicit content tagging.</li>
+<li><b>Vertex AI:</b> AutoML workflows, dataset creation, model training, endpoint deployment.</li>
+<li><b>BigQuery:</b> Data storage, IAM access control, dataset integration with ML pipelines.</li>
+<li><b>Important ML Concepts:</b> True/False Positives & Negatives, Regression, Classification, Hyperparameter tuning.</li>
+</ul>
+</details>
+
+</body>
+</html>

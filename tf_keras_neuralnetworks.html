@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TensorFlow & Neural Networks Guide</title>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+details { margin-bottom:15px; }
+summary { cursor:pointer; font-weight:bold; }
+code, pre { background:#222; color:#eee; padding:5px; border-radius:4px; display:block; overflow:auto; }
+button { padding:5px 10px; margin-top:5px; border:none; border-radius:4px; cursor:pointer; background:#0077cc; color:#fff; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; margin-top:5px; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+canvas { border:1px solid #ccc; border-radius:6px; margin-bottom:20px; background:#fff; }
+</style>
+</head>
+<body>
+
+<h1>🟢 TensorFlow & Neural Networks Guide</h1>
+
+<hr>
+
+<h2>📚 Quiz - Basics of TensorFlow & Keras</h2>
+
+<details open>
+<summary>Q1: What is TensorFlow?</summary>
+<button onclick="showOutput('q1')">Show Answer</button>
+<div class="output" id="q1" style="display:none;">
+- TensorFlow is an open-source machine learning framework developed by Google.  
+- Used for building, training, and deploying machine learning and deep learning models.
+</div>
+</details>
+
+<details>
+<summary>Q2: Why use Keras?</summary>
+<button onclick="showOutput('q2')">Show Answer</button>
+<div class="output" id="q2" style="display:none;">
+- Keras is a high-level API for building neural networks easily.  
+- Advantages: simplicity, modularity, wide adoption, and seamless integration with TensorFlow.
+</div>
+</details>
+
+<details>
+<summary>Q3: What is the difference between ML and Deep Learning?</summary>
+<button onclick="showOutput('q3')">Show Answer</button>
+<div class="output" id="q3" style="display:none;">
+- ML: Algorithms learn patterns from data (e.g., linear regression, decision trees).  
+- Deep Learning: Subset of ML using neural networks with multiple layers for complex tasks (e.g., image recognition, NLP).
+</div>
+</details>
+
+<details>
+<summary>Q4: What is a neural network?</summary>
+<button onclick="showOutput('q4')">Show Answer</button>
+<div class="output" id="q4" style="display:none;">
+- Neural networks are computational models inspired by the human brain.  
+- Consist of layers of neurons connected with weights, using activation functions to learn patterns from data.
+</div>
+</details>
+
+<details>
+<summary>Q5: How do you install TensorFlow?</summary>
+<button onclick="showOutput('q5')">Show Answer</button>
+<div class="output" id="q5" style="display:none;">
+- Use pip: <code>pip install tensorflow</code>  
+- Upgrade pip first: <code>pip install --upgrade pip</code>
+</div>
+</details>
+
+<hr>
+
+<h2>💻 TensorFlow & Keras Example</h2>
+<div class="note">This example classifies handwritten digits using the MNIST dataset.</div>
+
+<details open>
+<summary>Python Neural Network Example</summary>
+<div class="output">
+<pre>
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Load and preprocess MNIST dataset
+(train_images, train_labels), (test_images, test_labels) = keras.datasets.mnist.load_data()
+train_images, test_images = train_images / 255.0, test_images / 255.0
+
+# Build neural network
+model = keras.Sequential([
+    layers.Flatten(input_shape=(28, 28)),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.2),
+    layers.Dense(10, activation='softmax')
+])
+
+# Compile model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train model
+model.fit(train_images, train_labels, epochs=5)
+
+# Evaluate model
+test_loss, test_acc = model.evaluate(test_images, test_labels)
+print(f'Test accuracy: {test_acc}')
+</pre>
+</div>
+</details>
+
+<details>
+<summary>Step 1: Preprocessing</summary>
+<div class="output">
+- Normalize input images to [0, 1] for faster convergence.  
+- Flatten 28x28 images into 784-dimensional vectors for the dense network.
+</div>
+</details>
+
+<details>
+<summary>Step 2: Model Architecture</summary>
+<div class="output">
+- Flatten layer: input images reshaped.  
+- Dense layer: 128 neurons, ReLU activation.  
+- Dropout layer: prevents overfitting (randomly disables 20% of neurons).  
+- Output layer: 10 neurons with softmax for class probabilities.
+</div>
+</details>
+
+<details>
+<summary>Step 3: Training & Evaluation</summary>
+<div class="output">
+- Optimizer: Adam  
+- Loss: sparse categorical cross-entropy  
+- Metrics: accuracy  
+- Epochs: 5 (adjust as needed for better performance)
+</div>
+</details>
+
+<hr>
+
+<h2>🔑 Key Concepts Summary</h2>
+
+<details open>
+<summary>TensorFlow Concepts</summary>
+<div class="output">
+- Framework for ML and DL.  
+- Supports CPU and GPU acceleration.  
+- Provides low-level and high-level APIs for model building.
+</div>
+</details>
+
+<details>
+<summary>Keras Concepts</summary>
+<div class="output">
+- High-level neural network API.  
+- Modular, easy to use, integrates with TensorFlow.  
+- Allows building, training, and evaluating models quickly.
+</div>
+</details>
+
+<details>
+<summary>Neural Networks Concepts</summary>
+<div class="output">
+- Layers: Input, Hidden, Output  
+- Activation functions: ReLU, Softmax, Sigmoid  
+- Loss functions: MSE, Cross-Entropy  
+- Optimizers: SGD, Adam, RMSProp  
+- Dropout & regularization to prevent overfitting
+</div>
+</details>
+
+<script>
+function showOutput(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCP ML Interactive Platform with Graphs</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+pre, code { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+details { margin-bottom:15px; }
+summary { cursor:pointer; font-weight:bold; }
+textarea, input[type="file"], button, select { padding:5px 10px; margin-bottom:10px; cursor:pointer; border-radius:4px; border:none; display:block; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; }
+canvas { background:#fff; border:1px solid #ccc; border-radius:6px; margin-bottom:20px; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<h1>🟢 GCP ML Interactive Platform with Graphs</h1>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 1: NLP Simulation - Sentiment Analysis with Graph</summary>
+
+<textarea id="nlpComment" placeholder="Enter text for analysis..." rows="4" cols="50"></textarea>
+<button onclick="runNLP()">Analyze Text</button>
+
+<div class="output" id="nlpOutput">NLP analysis output will appear here...</div>
+
+<canvas id="sentimentChart" width="400" height="200"></canvas>
+
+<script>
+let sentimentCounts = {Positive:0, Neutral:0, Negative:0};
+const ctxSentiment = document.getElementById('sentimentChart').getContext('2d');
+const sentimentChart = new Chart(ctxSentiment, {
+    type: 'pie',
+    data: {labels:['Positive','Neutral','Negative'], datasets:[{data:[0,0,0], backgroundColor:['#4caf50','#ffeb3b','#f44336']}]},
+    options: {responsive:true}
+});
+
+function runNLP() {
+    const comment = document.getElementById("nlpComment").value.toLowerCase();
+    let sentiment="Neutral";
+    if(comment.includes("bad")||comment.includes("ugly")||comment.includes("terrible")) sentiment="Negative";
+    else if(comment.includes("good")||comment.includes("great")||comment.includes("excellent")) sentiment="Positive";
+
+    sentimentCounts[sentiment]++;
+    sentimentChart.data.datasets[0].data = [sentimentCounts.Positive, sentimentCounts.Neutral, sentimentCounts.Negative];
+    sentimentChart.update();
+
+    const tokens=comment.split(/\s+/);
+    const nouns=tokens.filter(t=>["student","product","movie","book","garden","pet","employee"].includes(t));
+    const pronouns=tokens.filter(t=>["i","you","he","she","they"].includes(t));
+
+    const output=`
+Sentiment: ${sentiment}
+Tokens: ${tokens.join(", ")}
+Nouns: ${nouns.join(", ")}
+Pronouns: ${pronouns.join(", ")}
+`;
+    document.getElementById("nlpOutput").textContent=output;
+}
+</script>
+
+<div class="note">💡 Each new comment updates the sentiment pie chart dynamically.</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 2: Regression Simulation with Graph</summary>
+
+<button onclick="runRegression()">Simulate Regression</button>
+
+<canvas id="regressionChart" width="600" height="300"></canvas>
+
+<script>
+// Simulated regression dataset
+const ctxRegression = document.getElementById('regressionChart').getContext('2d');
+let regressionChart = new Chart(ctxRegression, {type:'scatter', data:{datasets:[]}, options:{responsive:true, scales:{x:{title:{display:true,text:'Feature X'}},y:{title:{display:true,text:'Predicted Y'}}}}});
+
+function runRegression() {
+    const actualData=[], predictedData=[];
+    for(let i=0;i<20;i++){
+        const x=Math.random()*10;
+        const y=2*x + Math.random()*4; // simple linear relation y=2x + noise
+        actualData.push({x:x,y:y});
+        predictedData.push({x:x,y:2*x});
+    }
+    regressionChart.data.datasets = [
+        {label:'Actual', data:actualData, backgroundColor:'#f44336', showLine:false, pointRadius:5},
+        {label:'Predicted', data:predictedData, backgroundColor:'#4caf50', showLine:true, fill:false, borderColor:'#4caf50', pointRadius:0}
+    ];
+    regressionChart.update();
+}
+</script>
+
+<div class="note">💡 Click "Simulate Regression" to see actual vs predicted points with a linear regression line.</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 3: Vertex AI + Vision + BigQuery Simulation</summary>
+
+<select id="datasetSelect">
+    <option value="students">Engineering Students</option>
+    <option value="sales">Company Sales</option>
+    <option value="movies">Movie Ratings</option>
+</select>
+<button onclick="runVertex()">Run AutoML Workflow</button>
+
+<input type="file" id="visionImage" accept="image/*">
+<button onclick="runVision()">Analyze Image</button>
+
+<div class="output" id="vertexOutput">Vertex AI simulation output will appear here...</div>
+
+<script>
+function runVertex() {
+    const dataset=document.getElementById("datasetSelect").value;
+    let output=`Simulating Vertex AI for dataset: ${dataset}\n\n`;
+    output+="Step 1: Get the data ✅\nStep 2: Prepare the data ✅\nStep 3: Train AutoML model ✅\nStep 4: Evaluate and score model ✅\nStep 5: Deploy endpoint ✅\n\n";
+
+    if(dataset==="students") output+="Prediction: Students at risk identified. False Negatives may indicate some at-risk students missed ⚠️\n";
+    else if(dataset==="sales") output+="Prediction: Future sales forecasted with regression model ✅\n";
+    else if(dataset==="movies") output+="Prediction: Movie recommendation system generated ✅\n";
+
+    output+="BigQuery Simulation: Query dataset, filter, and integrate into ML workflow ✅\n";
+    document.getElementById("vertexOutput").textContent=output;
+}
+
+function runVision() {
+    const fileInput=document.getElementById("visionImage");
+    if(!fileInput.files[0]) { alert("Upload an image first."); return; }
+    const fileName=fileInput.files[0].name.toLowerCase();
+    let output=`Analyzing image: ${fileName}\n\n`;
+    if(fileName.includes("face")) output+="Face Detection: 2 faces detected ✅\n";
+    else output+="Face Detection: No faces detected ⚠️\n";
+    if(fileName.includes("landmark")) output+="Landmark Detection: Identified landmark ✅\n";
+    else output+="Landmark Detection: No landmark detected ⚠️\n";
+    if(fileName.includes("text")) output+="OCR: Found text 'Hello World' ✅\n";
+    else output+="OCR: No text detected ⚠️\n";
+    if(fileName.includes("nsfw")||fileName.includes("explicit")) output+="Explicit Content Tag: YES ⚠️\n";
+    else output+="Explicit Content Tag: NO ✅\n";
+    document.getElementById("vertexOutput").textContent+=output;
+}
+</script>
+
+<div class="note">💡 This simulates an end-to-end ML workflow combining Vertex AI, BigQuery integration, and Vision API features.</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 4: ML Concepts Summary</summary>
+<ul>
+<li><b>Regression:</b> Continuous value prediction, R², SST/SSR/SSE.</li>
+<li><b>Classification:</b> Discrete outcomes, TP/TN/FP/FN, logistic regression.</li>
+<li><b>Clustering:</b> K-Means to group similar datapoints.</li>
+<li><b>Hyperparameter Tuning:</b> Optimize model parameters.</li>
+<li><b>NLP:</b> Sentiment, syntax, tokenization, entity recognition.</li>
+<li><b>Vision API:</b> Face detection, landmark detection, OCR, explicit content moderation.</li>
+<li><b>Vertex AI:</b> AutoML workflows, dataset management, endpoint deployment.</li>
+<li><b>BigQuery:</b> Data integration, querying, IAM security.</li>
+<li><b>Best Practices:</b> Region consistency, monitoring False Negatives, proper IAM & storage usage.</li>
+</ul>
+</details>
+
+</body>
+</html>

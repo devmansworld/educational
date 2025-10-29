@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TensorFlow.js Handwritten Digit Recognition</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+canvas { border:1px solid #000; background:#fff; margin-top:10px; }
+button { padding:5px 10px; margin-top:5px; border:none; border-radius:4px; cursor:pointer; background:#0077cc; color:#fff; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; margin-top:10px; font-weight:bold; font-size:1.2em; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<h1>🟢 TensorFlow.js Handwritten Digit Recognition</h1>
+<div class="note">Draw a digit (0-9) on the canvas and let the neural network predict it.</div>
+
+<canvas id="canvas" width="280" height="280"></canvas><br>
+<button onclick="clearCanvas()">Clear</button>
+<button onclick="predict()">Predict</button>
+<div class="output" id="prediction">Prediction: ?</div>
+
+<script>
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+ctx.lineWidth = 20;
+ctx.lineCap = "round";
+let drawing = false;
+
+// Mouse events for drawing
+canvas.addEventListener('mousedown', e => drawing = true);
+canvas.addEventListener('mouseup', e => drawing = false);
+canvas.addEventListener('mousemove', draw);
+
+function draw(e) {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+// Clear canvas
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('prediction').textContent = 'Prediction: ?';
+}
+
+// Load pre-trained MNIST model from TensorFlow.js
+let model;
+async function loadModel() {
+  model = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json');
+  console.log("Model loaded!");
+}
+loadModel();
+
+// Preprocess canvas image
+function preprocessCanvas(image) {
+  let tensor = tf.browser.fromPixels(image, 1)
+      .resizeNearestNeighbor([28, 28])
+      .toFloat()
+      .div(tf.scalar(255.0))
+      .reshape([1, 28, 28, 1]);
+  return tensor;
+}
+
+// Predict digit
+async function predict() {
+  if (!model) { alert("Model is loading, please wait..."); return; }
+  const tensor = preprocessCanvas(canvas);
+  const prediction = model.predict(tensor);
+  const pred = prediction.argMax(1).dataSync()[0];
+  document.getElementById('prediction').textContent = 'Prediction: ' + pred;
+}
+</script>
+
+</body>
+</html>
