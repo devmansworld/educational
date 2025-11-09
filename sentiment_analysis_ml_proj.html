@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCP ML / NLP / Vertex AI Project Guide</title>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+pre, code { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+details { margin-bottom:15px; }
+summary { cursor:pointer; font-weight:bold; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+button { padding:5px 10px; margin-bottom:10px; cursor:pointer; border-radius:4px; border:none; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+
+<h1>🟢 GCP ML / NLP / Vertex AI Project Guide</h1>
+
+<hr>
+
+<details open>
+<summary>🔹 Summary of Concepts</summary>
+<ul>
+<li><b>Linear Regression:</b> Predict continuous values, understand SST, SSR, SSE, R².</li>
+<li><b>Classification:</b> Logistic regression, True/False Positives/Negatives.</li>
+<li><b>Clustering:</b> K-Means for grouping similar datapoints.</li>
+<li><b>Vertex AI:</b> AutoML for regression, classification, NLP, vision tasks.</li>
+<li><b>BigQuery:</b> Dataset management and IAM roles for secure ML workflows.</li>
+<li><b>Natural Language API:</b> Sentiment analysis, entity recognition, syntax analysis.</li>
+<li><b>Vision API:</b> Face detection, OCR, landmark detection, content moderation.</li>
+</ul>
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Working Project Simulation - Sentiment & NLP</summary>
+
+<p>Simulate sentiment analysis on a customer comment:</p>
+
+<textarea id="commentInput" placeholder="Enter a comment..." rows="4" cols="50"></textarea>
+<button onclick="runSentiment()">Analyze Comment</button>
+
+<div class="output" id="projectOutput">Output will appear here...</div>
+
+<script>
+// Fake sentiment function for demo
+function runSentiment() {
+    const comment = document.getElementById("commentInput").value.toLowerCase();
+    let sentiment = "Neutral";
+
+    if(comment.includes("bad") || comment.includes("ugly") || comment.includes("terrible")) {
+        sentiment = "Negative";
+    } else if(comment.includes("good") || comment.includes("excellent") || comment.includes("great")) {
+        sentiment = "Positive";
+    }
+
+    // Simple token extraction
+    const tokens = comment.split(/\s+/);
+    const nouns = tokens.filter(t => ["student","product","movie","book"].includes(t));
+    const pronouns = tokens.filter(t => ["i","you","he","she","they"].includes(t));
+
+    const output = `
+Sentiment: ${sentiment}
+Tokens: ${tokens.join(", ")}
+Nouns: ${nouns.join(", ")}
+Pronouns: ${pronouns.join(", ")}
+`;
+
+    document.getElementById("projectOutput").textContent = output;
+}
+</script>
+
+<div class="note">
+💡 Tip: Type any customer comment to see sentiment, basic tokenization, and noun/pronoun extraction. This simulates how GCP NLP works for text analysis in a frontend application.
+</div>
+
+</details>
+
+</body>
+</html>

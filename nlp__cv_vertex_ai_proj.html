@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCP ML / NLP / Vertex AI / Vision Interactive Platform</title>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f4f9; color:#222; margin:30px; line-height:1.6; }
+h1,h2,h3 { color:#0077cc; }
+pre, code { background:#222; color:#eee; padding:10px; border-radius:6px; display:block; overflow:auto; }
+details { margin-bottom:15px; }
+summary { cursor:pointer; font-weight:bold; }
+textarea, input[type="file"], button, select { padding:5px 10px; margin-bottom:10px; cursor:pointer; border-radius:4px; border:none; display:block; }
+.output { background:#eee; padding:10px; border-radius:6px; white-space:pre-wrap; }
+.note { background:#ffffcc; padding:10px; border-left:4px solid #0077cc; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<h1>🟢 GCP ML Interactive Teaching Platform</h1>
+<p>Explore NLP, Vision API, Vertex AI, BigQuery, and ML concepts interactively in your browser.</p>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 1: NLP Simulation - Sentiment, Syntax & Token Analysis</summary>
+
+<textarea id="nlpComment" placeholder="Enter text for analysis..." rows="4" cols="50"></textarea>
+<button onclick="runNLP()">Analyze Text</button>
+
+<div class="output" id="nlpOutput">NLP analysis output will appear here...</div>
+
+<script>
+function runNLP() {
+    const comment = document.getElementById("nlpComment").value.toLowerCase();
+    let sentiment="Neutral";
+    if(comment.includes("bad")||comment.includes("ugly")||comment.includes("terrible")) sentiment="Negative";
+    else if(comment.includes("good")||comment.includes("great")||comment.includes("excellent")) sentiment="Positive";
+
+    const tokens=comment.split(/\s+/);
+    const nouns=tokens.filter(t=>["student","product","movie","book","garden","pet","employee"].includes(t));
+    const pronouns=tokens.filter(t=>["i","you","he","she","they"].includes(t));
+
+    const output=`
+Sentiment: ${sentiment}
+Tokens: ${tokens.join(", ")}
+Nouns: ${nouns.join(", ")}
+Pronouns: ${pronouns.join(", ")}
+`;
+    document.getElementById("nlpOutput").textContent=output;
+}
+</script>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 2: Vision Simulation - Face, Landmark, OCR & Explicit Content</summary>
+
+<input type="file" id="visionImage" accept="image/*">
+<button onclick="runVision()">Analyze Image</button>
+
+<div class="output" id="visionOutput">Vision analysis output will appear here...</div>
+
+<script>
+function runVision() {
+    const fileInput=document.getElementById("visionImage");
+    if(!fileInput.files[0]) { alert("Please upload an image."); return; }
+    const fileName=fileInput.files[0].name.toLowerCase();
+    let output=`Analyzing image: ${fileName}\n\n`;
+    if(fileName.includes("face")) output+="Face Detection: 2 faces detected ✅\n";
+    else output+="Face Detection: No faces detected ⚠️\n";
+    if(fileName.includes("landmark")) output+="Landmark Detection: Identified landmark ✅\n";
+    else output+="Landmark Detection: No landmark detected ⚠️\n";
+    if(fileName.includes("text")) output+="OCR: Found text 'Hello World' ✅\n";
+    else output+="OCR: No text detected ⚠️\n";
+    if(fileName.includes("nsfw")||fileName.includes("explicit")) output+="Explicit Content Tag: YES ⚠️\n";
+    else output+="Explicit Content Tag: NO ✅\n";
+    document.getElementById("visionOutput").textContent=output;
+}
+</script>
+
+<div class="note">
+💡 Tip: Name your images with keywords like "face", "landmark", "text", "nsfw" to simulate detection outputs.
+</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 3: Vertex AI & BigQuery Simulation</summary>
+
+<p>Select a dataset and simulate AutoML workflow:</p>
+
+<select id="datasetSelect">
+    <option value="students">Engineering Students</option>
+    <option value="sales">Company Sales</option>
+    <option value="movies">Movie Ratings</option>
+</select>
+<button onclick="runVertex()">Run AutoML Workflow</button>
+
+<div class="output" id="vertexOutput">Vertex AI simulation output will appear here...</div>
+
+<script>
+function runVertex() {
+    const dataset=document.getElementById("datasetSelect").value;
+    let output=`Simulating Vertex AI for dataset: ${dataset}\n\n`;
+    output+="Step 1: Get the data ✅\nStep 2: Prepare the data ✅\nStep 3: Train AutoML model ✅\nStep 4: Evaluate and score model ✅\nStep 5: Deploy endpoint ✅\n\n";
+
+    if(dataset==="students") output+="Prediction: Students at risk identified. False Negatives may indicate some at-risk students missed ⚠️\n";
+    else if(dataset==="sales") output+="Prediction: Future sales forecasted with regression model ✅\n";
+    else if(dataset==="movies") output+="Prediction: Movie recommendation system generated ✅\n";
+
+    output+="BigQuery Simulation: Query dataset, filter, and integrate into ML workflow ✅\n";
+    document.getElementById("vertexOutput").textContent=output;
+}
+</script>
+
+<div class="note">
+💡 Tip: This simulates a full AutoML workflow, including dataset prep, training, evaluation, deployment, and BigQuery integration.
+</div>
+
+</details>
+
+<hr>
+
+<details open>
+<summary>🔹 Part 4: ML Fundamentals & Concept Summary</summary>
+<ul>
+<li><b>Regression:</b> Predict continuous numeric values; evaluate with SST, SSR, SSE, R².</li>
+<li><b>Classification:</b> Predict discrete outcomes; consider TP, TN, FP, FN.</li>
+<li><b>Clustering:</b> K-Means to group similar datapoints.</li>
+<li><b>Hyperparameter Tuning:</b> Optimize model performance.</li>
+<li><b>Vertex AI:</b> AutoML workflows, dataset creation, endpoint deployment.</li>
+<li><b>BigQuery:</b> Dataset querying, IAM access, integration with ML models.</li>
+<li><b>NLP:</b> Sentiment analysis, syntax analysis, tokenization, entity recognition.</li>
+<li><b>Vision API:</b> Face detection, landmark recognition, OCR, explicit content moderation.</li>
+<li><b>Best Practices:</b> Keep resources in the same region, track False Negatives in critical predictions, use cloud storage and IAM correctly.</li>
+</ul>
+</details>
+
+</body>
+</html>
