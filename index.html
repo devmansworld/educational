@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dynamic File List with Enhanced Iframe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { margin:0; font-family: monospace; background:#1c1c1c; color:#cfcfcf; height:100vh; display:flex; flex-direction:row; overflow:hidden; }
+#menu { width:250px; min-width:200px; background:#2b2b2b; padding:10px; box-sizing:border-box; overflow-y:auto; }
+#menu h2 { color:#ffa500; margin-top:0; }
+#menu button { width:100%; margin:5px 0; background:#ff8800; color:#1c1c1c; border:none; padding:8px 10px; font-weight:bold; cursor:pointer; border-radius:4px; }
+#menu button:hover { background:#ffbb33; }
+#menu input[type=file] { display:none; }
+#menu ul { list-style:none; padding:0; margin:5px 0; }
+#menu li a { color:#99ff66; display:block; padding:4px; text-decoration:none; word-break:break-word; border-radius:3px; }
+#menu li a:hover { text-decoration:underline; background:#444; color:#ff66cc; }
+#menu li a:visited { color:#66ffcc; }
+#main { flex:1; display:flex; flex-direction:column; }
+#iframe-container { flex:1; background:#1c1c1c; display:flex; flex-direction:column; position:relative; }
+iframe { flex:1; border:none; width:100%; background:#1c1c1c; height:100%; }
+#open-new-tab { background:#ff8800; color:#1c1c1c; border:none; padding:8px 10px; margin:5px; font-weight:bold; cursor:pointer; border-radius:4px; align-self:flex-start; }
+#open-new-tab:hover { background:#ffbb33; }
+#status-message { color:#ff6666; margin:5px; font-weight:bold; }
+@media (max-width:800px){ body{ flex-direction:column; } #menu{ width:100%; height:200px; overflow-x:auto; } #iframe-container{ flex:1; } }
+.copy-btn { background:#66ffcc; border:none; color:#1c1c1c; padding:2px 6px; margin:0 0 5px 0; font-size:12px; cursor:pointer; border-radius:3px; }
+.copy-btn:hover { background:#99ff66; }
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <h2>File List</h2>
+  <button onclick="promptLoadFile()">📂 Load File Manually</button>
+  <input type="file" id="csv-file" accept=".csv,.txt,.json">
+  <ul id="file-list"></ul>
+  <div id="status-message"></div>
+</div>
+
+<div id="main">
+  <div id="iframe-container">
+    <iframe id="preview-frame"></iframe>
+    <button id="open-new-tab" style="display:none;">Open in New Tab</button>
+  </div>
+</div>
+
+<!-- ===== Modular codeHighlighter.js inline ===== -->
+<script>
+(function(){
+  const COLORS = { html:'#ff8800', css:'#99ff66', js:'#66ccff', python:'#ff66cc' };
+  function highlightCodeBlock(block){
+    const lang = block.getAttribute('data-lang')||'js';
+    let code = block.textContent;
+    if(lang==='html') code = code.replace(/(&lt;\/?[\w\s="'-:.]+&gt;)/g, `<span style="color:${COLORS.html}">$1</span>`);
+    else if(lang==='css') code = code.replace(/(\{|\})/g, `<span style="color:${COLORS.css}">$1</span>`);
+    else if(lang==='js') code = code.replace(/(\{|\})/g, `<span style="color:${COLORS.js}">$1</span>`);
+    else if(lang==='python') code = code.replace(/(:)/g, `<span style="color:${COLORS.python}">$1</span>`);
+    block.innerHTML = code;
+    block.style.fontFamily = 'Consolas, monospace';
+    block.style.backgroundColor = 'black';
+    block.style.color = 'white';
+    block.style.padding = '10px';
+    block.style.margin = '10px 0';
+    block.style.whiteSpace = 'pre';
+    block.style.overflowX = 'auto';
+    block.style.borderRadius = '4px';
+  }
+  function addCopyButton(block){
+    const btn = document.createElement("button");
+    btn.textContent = "Copy";
+    btn.className="copy-btn";
+    btn.onclick = ()=>{navigator.clipboard.writeText(block.textContent); btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Copy",1000);}
+    block.parentNode.insertBefore(btn, block);
+  }
+  window.codeHighlighter = {
+    highlightAll: function(selector='.code-block'){
+      document.querySelectorAll(selector).forEach(block=>{
+        highlightCodeBlock(block);
+        addCopyButton(block);
+      });
+    }
+  };
+})();
+</script>
+
+<script>
+// ===== File list functions =====
+function renderFiles(files){
+    const list=document.getElementById("file-list");
+    list.innerHTML="";
+    files.forEach(f=>{
+        const li=document.createElement("li");
+        const a=document.createElement("a");
+        a.href="#"; a.textContent=f;
+        a.onclick=()=>loadInIframe(f);
+        li.appendChild(a); list.appendChild(li);
+    });
+}
+
+function loadInIframe(file){
+    const iframe=document.getElementById("preview-frame");
+    iframe.src=file;
+    const btn=document.getElementById("open-new-tab");
+    btn.style.display="inline-block";
+    btn.onclick=()=>window.open(file,"_blank");
+
+    iframe.onload=()=>{
+        try{
+            const innerDoc=iframe.contentDocument||iframe.contentWindow.document;
+            if(innerDoc){
+                // Auto-resize iframe
+                iframe.style.height = innerDoc.body.scrollHeight + "px";
+
+                // Highlight code blocks inside iframe
+                const codeBlocks=innerDoc.querySelectorAll(".code-block");
+                codeBlocks.forEach(b=>{
+                    const cloned=b.cloneNode(true); b.parentNode.replaceChild(cloned,b);
+                });
+                iframe.contentWindow.codeHighlighter?.highlightAll?.();
+
+                // Add copy buttons inside iframe
+                codeBlocks.forEach(b=>{
+                    const btn = innerDoc.createElement("button");
+                    btn.textContent="Copy";
+                    btn.className="copy-btn";
+                    btn.onclick = ()=>{navigator.clipboard.writeText(b.textContent); btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Copy",1000);}
+                    b.parentNode.insertBefore(btn,b);
+                });
+            }
+        }catch(e){console.warn("Cannot access iframe content for cross-origin:", e);}
+    };
+}
+
+// ===== Load default JSON/TXT =====
+function loadDefaultFiles(){
+    fetch("file_list.json").then(r=>{if(!r.ok)throw new Error("JSON not found");return r.json();}).then(renderFiles)
+    .catch(()=>{fetch("file_list.txt").then(r=>{if(!r.ok)throw new Error("TXT not found");return r.text();})
+        .then(t=>renderFiles(t.split("\n").map(f=>f.trim()).filter(f)))
+        .catch(()=>document.getElementById("status-message").textContent="No file_list.json or file_list.txt found.");});
+}
+
+// ===== Manual file load =====
+function promptLoadFile(){
+    const fileInput=document.getElementById("csv-file");
+    fileInput.value=""; fileInput.click();
+    fileInput.onchange=()=>{
+        const file=fileInput.files[0];
+        if(!file) return;
+        const validFiles=["file_list.json","file_list.txt"];
+        if(!validFiles.includes(file.name) && !file.name.endsWith(".csv")) { alert("Invalid file"); return; }
+        const reader=new FileReader();
+        reader.onload=e=>{
+            let files=[];
+            try{
+                const content=e.target.result;
+                if(file.name.endsWith(".json")) files=JSON.parse(content);
+                else if(file.name.endsWith(".txt")) files=content.split("\n").map(f=>f.trim()).filter(f);
+                else if(file.name.endsWith(".csv")) files=content.split("\n").map(f=>f.split(",")[0].trim()).filter(f);
+                renderFiles(files);
+                document.getElementById("status-message").textContent="Loaded file: "+file.name;
+            }catch(err){document.getElementById("status-message").textContent="Error parsing file: "+err.message;}
+        };
+        reader.readAsText(file);
+    };
+}
+
+// ===== Initialize =====
+loadDefaultFiles();
+</script>
+
+</body>
+</html>
